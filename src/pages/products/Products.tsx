@@ -1,183 +1,183 @@
-import { FC, useRef, useState } from "react";
-import { SearchOutlined } from "@ant-design/icons";
-import type { InputRef, TableColumnsType, TableColumnType } from "antd";
-import { Button, Input, Space, Table } from "antd";
-import type { FilterDropdownProps } from "antd/es/table/interface";
-import Highlighter from "react-highlight-words";
+import React, { useState, useEffect } from "react";
+import { Table, Space, Button, message } from "antd";
+import axios from "axios";
+import { DataType } from "../../type/types";
+import EditProduct from "./EditProduct";
+import AddProduct from "./AddProduct";
+import { ColumnsType } from "antd/es/table";
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
+const Products: React.FC = () => {
+  const [data, setData] = useState<DataType[]>([]);
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<DataType | null>(null);
 
-type DataIndex = keyof DataType;
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-const data: DataType[] = [
-  {
-    key: "1",
-    name: "John Brown",
-    age: 32,
-    address: "New York No. 1 Lake Park",
-  },
-  {
-    key: "2",
-    name: "Joe Black",
-    age: 42,
-    address: "London No. 1 Lake Park",
-  },
-  {
-    key: "3",
-    name: "Jim Green",
-    age: 32,
-    address: "Sydney No. 1 Lake Park",
-  },
-  {
-    key: "4",
-    name: "Jim Red",
-    age: 32,
-    address: "London No. 2 Lake Park",
-  },
-];
-
-const Products: FC = () => {
-  const [searchText, setSearchText] = useState("");
-  const [searchedColumn, setSearchedColumn] = useState("");
-  const searchInput = useRef<InputRef>(null);
-
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: FilterDropdownProps["confirm"],
-    dataIndex: DataIndex
-  ) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(
+        "http://95.85.121.153:5634/product/product-by-group?group=2"
+      );
+      const products = response.data.map((product: any) => ({
+        key: product.id,
+        image: product.image,
+        title_tm: product.title_tm,
+        title_en: product.title_en,
+        title_ru: product.title_ru,
+        short_tm: product.short_tm,
+        short_en: product.short_en,
+        short_ru: product.short_ru,
+        desc_tm: product.desc_tm,
+        desc_en: product.desc_en,
+        desc_ru: product.desc_ru,
+        id: product.id,
+      }));
+      setData(products);
+    } catch (error) {
+      message.error("Failed to fetch products");
+    }
   };
 
-  const handleReset = (clearFilters: () => void) => {
-    clearFilters();
-    setSearchText("");
+  const handleAdd = () => {
+    setIsAddModalVisible(true);
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): TableColumnType<DataType> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
-          style={{ marginBottom: 8, display: "block" }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Search
+  const handleEdit = (record: DataType) => {
+    setSelectedProduct(record);
+    setIsEditModalVisible(true);
+  };
+
+  const handleDelete = async (key: React.Key) => {
+    try {
+      await axios.delete(`http://95.85.121.153:5634/product/${key}`);
+      message.success("Product deleted successfully");
+      fetchProducts(); // Refresh product list
+    } catch (error) {
+      message.error("Failed to delete product");
+    }
+  };
+
+  const handleAddModalClose = () => {
+    setIsAddModalVisible(false);
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalVisible(false);
+  };
+
+  const columns: ColumnsType<DataType> = [
+    {
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (text: string) => (
+        <img src={text} alt="product" style={{ width: 50, height: 50 }} />
+      ),
+      width: 100,
+    },
+    {
+      title: "Title (TM)",
+      dataIndex: "title_tm",
+      key: "title_tm",
+      width: 150,
+    },
+    {
+      title: "Title (EN)",
+      dataIndex: "title_en",
+      key: "title_en",
+      width: 150,
+    },
+    {
+      title: "Title (RU)",
+      dataIndex: "title_ru",
+      key: "title_ru",
+      width: 150,
+    },
+    {
+      title: "Short Description (TM)",
+      dataIndex: "short_tm",
+      key: "short_tm",
+      width: 200,
+    },
+    {
+      title: "Short Description (EN)",
+      dataIndex: "short_en",
+      key: "short_en",
+      width: 200,
+    },
+    {
+      title: "Short Description (RU)",
+      dataIndex: "short_ru",
+      key: "short_ru",
+      width: 200,
+    },
+    {
+      title: "Description (TM)",
+      dataIndex: "desc_tm",
+      key: "desc_tm",
+      width: 300,
+    },
+    {
+      title: "Description (EN)",
+      dataIndex: "desc_en",
+      key: "desc_en",
+      width: 300,
+    },
+    {
+      title: "Description (RU)",
+      dataIndex: "desc_ru",
+      key: "desc_ru",
+      width: 300,
+    },
+    {
+      title: "Action",
+      key: "operation",
+      fixed: "right",
+      width: 150,
+      render: (_: any, record: DataType) => (
+        <Space size="middle">
+          <Button type="link" onClick={() => handleEdit(record)}>
+            Edit
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({ closeDropdown: false });
-              setSearchText((selectedKeys as string[])[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            close
+          <Button type="link" danger onClick={() => handleDelete(record.key)}>
+            Delete
           </Button>
         </Space>
-      </div>
-    ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
       ),
-  });
-
-  const columns: TableColumnsType<DataType> = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      width: "30%",
-      ...getColumnSearchProps("name"),
-    },
-    {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-      width: "20%",
-      ...getColumnSearchProps("age"),
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-      ...getColumnSearchProps("address"),
-      sorter: (a, b) => a.address.length - b.address.length,
-      sortDirections: ["descend", "ascend"],
     },
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  return (
+    <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginBottom: 16,
+        }}
+      >
+        <h2>Products</h2>
+        <Button type="primary" onClick={handleAdd} style={{ float: "right" }}>
+          Add Product
+        </Button>
+      </div>
+      <Table
+        columns={columns}
+        dataSource={data}
+        scroll={{ x: 1200, y: 300 }}
+        pagination={{ pageSize: 10 }}
+      />
+      <AddProduct visible={isAddModalVisible} onClose={handleAddModalClose} />
+      <EditProduct
+        visible={isEditModalVisible}
+        onClose={handleEditModalClose}
+        product={selectedProduct}
+      />
+    </div>
+  );
 };
 
 export default Products;
