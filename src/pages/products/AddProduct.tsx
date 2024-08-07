@@ -9,9 +9,14 @@ const { Option } = Select;
 interface AddProductProps {
   visible: boolean;
   onClose: () => void;
+  onSuccess: () => void; // Callback function to refresh the product list
 }
 
-const AddProduct: React.FC<AddProductProps> = ({ visible, onClose }) => {
+const AddProduct: React.FC<AddProductProps> = ({
+  visible,
+  onClose,
+  onSuccess,
+}) => {
   const [form] = Form.useForm();
   const [groups, setGroups] = useState<any[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -52,7 +57,7 @@ const AddProduct: React.FC<AddProductProps> = ({ visible, onClose }) => {
       formData.append("group_id", values.group_id);
 
       if (file) {
-        formData.append("image", file); // Append the file if available
+        formData.append("file", file); // Append the file if available
       }
 
       await axios.post("http://95.85.121.153:5634/product", formData, {
@@ -60,10 +65,12 @@ const AddProduct: React.FC<AddProductProps> = ({ visible, onClose }) => {
           "Content-Type": "multipart/form-data",
         },
       });
+
       message.success("Product added successfully!");
       form.resetFields();
       setFile(null); // Reset file state
       setImageUrl(undefined); // Clear image preview
+      onSuccess(); // Notify parent component to refresh product list
       onClose();
     } catch (error) {
       console.error("Failed to add product:", error);
@@ -71,7 +78,6 @@ const AddProduct: React.FC<AddProductProps> = ({ visible, onClose }) => {
     }
   };
 
-  // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0] || null;
     setFile(selectedFile);

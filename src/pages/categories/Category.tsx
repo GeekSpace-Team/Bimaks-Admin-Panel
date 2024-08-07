@@ -76,6 +76,7 @@ const Category: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,9 +97,14 @@ const Category: React.FC = () => {
         name_tm: editingCategory.name_tm,
         name_en: editingCategory.name_en,
         name_ru: editingCategory.name_ru,
+        file: [],
       });
+      setFileList(
+        editingCategory.image ? [{ url: editingCategory.image }] : []
+      );
     } else {
       form.resetFields();
+      setFileList([]);
     }
   }, [editingCategory, form]);
 
@@ -127,7 +133,7 @@ const Category: React.FC = () => {
     formData.append("name_en", values.name_en);
     formData.append("name_ru", values.name_ru);
 
-    const fileList = values.file?.fileList || [];
+    // Handle image file
     if (fileList.length > 0) {
       const file = fileList[0].originFileObj;
       if (file) {
@@ -158,12 +164,8 @@ const Category: React.FC = () => {
   };
 
   const handleFileChange = (info: any) => {
-    // Ensure fileList is an array
     if (info.fileList && Array.isArray(info.fileList)) {
-      const file = info.fileList[0]?.originFileObj;
-      if (file) {
-        form.setFieldsValue({ file: [info.fileList[0]] });
-      }
+      setFileList(info.fileList);
     }
   };
 
@@ -255,6 +257,7 @@ const Category: React.FC = () => {
           >
             <Upload
               listType="picture"
+              fileList={fileList}
               beforeUpload={() => false} // Prevent automatic upload
               onChange={handleFileChange}
             >

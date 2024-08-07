@@ -1,23 +1,28 @@
 import React from "react";
-import { Modal, Form, Input, Button, Upload, Row, Col } from "antd";
+import { Modal, Form, Input, Button, Row, Col, Select, message } from "antd";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css"; // Import SunEditor styles
 import { DataType } from "../../type/types";
-import { UploadOutlined } from "@ant-design/icons";
+import axios from "axios";
+
+const { Option } = Select;
 
 interface EditProductProps {
   visible: boolean;
   onClose: () => void;
   product: DataType | null;
+  fetchProducts: () => Promise<void>; // Add this line
 }
 
 const EditProduct: React.FC<EditProductProps> = ({
   visible,
   onClose,
   product,
+  fetchProducts, // Include this in the destructuring
 }) => {
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = React.useState<string | undefined>(undefined);
+  const [groups, setGroups] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     if (product) {
@@ -31,8 +36,8 @@ const EditProduct: React.FC<EditProductProps> = ({
         desc_tm: product.desc_tm,
         desc_en: product.desc_en,
         desc_ru: product.desc_ru,
+        group_id: product.group_id,
       });
-      // Convert image to URL if it's a File object or set to undefined
       if (typeof product.image === "string") {
         setImageUrl(product.image);
       } else if (product.image instanceof File) {
@@ -41,25 +46,49 @@ const EditProduct: React.FC<EditProductProps> = ({
         setImageUrl(undefined);
       }
     }
+    fetchGroups(); // Fetch groups when component mounts
   }, [product, form]);
 
-  const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        console.log("Updated values: ", { ...values, image: imageUrl });
-        // Handle update product logic here
-        onClose();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+  const fetchGroups = async () => {
+    try {
+      const response = await axios.get(
+        "http://95.85.121.153:5634/product-group"
+      );
+      setGroups(response.data);
+    } catch (error) {
+      message.error("Failed to fetch groups");
+    }
   };
 
-  const handleUploadChange = (info: any) => {
-    if (info.file.status === "done") {
-      setImageUrl(info.file.response?.url || "");
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      form.resetFields();
+      const updatedProduct = { ...values, image: imageUrl };
+
+      await axios.patch(
+        `http://95.85.121.153:5634/product/${product?.id}`,
+        updatedProduct
+      );
+
+      message.success("Product updated successfully");
+      await fetchProducts(); // Refresh product list after update
+      onClose();
+    } catch (error: any) {
+      // Cast error to any
+      if (error.response && error.response.data) {
+        const errors = error.response.data.message || [];
+        errors.forEach((err: string) => message.error(err));
+      } else {
+        message.error("Failed to update product");
+      }
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageUrl(URL.createObjectURL(file));
     }
   };
 
@@ -209,17 +238,32 @@ const EditProduct: React.FC<EditProductProps> = ({
           </Col>
           <Col span={12}>
             <Form.Item
+              name="group_id"
+              label="Group"
+              rules={[{ required: true, message: "Please select a group!" }]}
+            >
+              <Select placeholder="Select a group">
+                {groups.map((group) => (
+                  <Option key={group.id} value={group.id.toString()}>
+                    {group.name_en}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item
               label="Image"
               rules={[{ required: true, message: "Please upload an image!" }]}
             >
-              <Upload
-                action="/upload" // Replace with your upload endpoint
-                listType="picture"
-                showUploadList={false}
-                onChange={handleUploadChange}
-              >
-                <Button icon={<UploadOutlined />}>Upload Image</Button>
-              </Upload>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: "block" }}
+              />
               {imageUrl && (
                 <img
                   src={imageUrl}

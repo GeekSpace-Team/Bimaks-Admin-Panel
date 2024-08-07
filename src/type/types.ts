@@ -11,4 +11,5 @@ export interface DataType {
   desc_tm: string;
   desc_en: string;
   desc_ru: string;
+  group_id: number;
 }
