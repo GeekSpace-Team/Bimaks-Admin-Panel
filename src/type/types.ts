@@ -1,7 +1,7 @@
 export interface DataType {
   key: React.Key;
   id: number;
-  image: string;
+  image: File | null;
   title_tm: string;
   title_en: string;
   title_ru: string;
