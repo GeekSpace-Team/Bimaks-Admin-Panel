@@ -27,8 +27,8 @@ const SpinnerWrapper = styled.div`
 `;
 
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
-const Products = lazy(() => import("./pages/products/Products"));
 const Category = lazy(() => import("./pages/categories/Category"));
+const Products = lazy(() => import("./pages/products/Products"));
 
 const App: React.FC = () => (
   <Router>
