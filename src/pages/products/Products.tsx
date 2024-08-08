@@ -3,14 +3,13 @@ import { Table, Space, Button, message } from "antd";
 import axios from "axios";
 import { ColumnsType } from "antd/es/table";
 import { DataType } from "../../type/types";
-import EditProduct from "./EditProduct";
+// import EditProduct from "./EditProduct";
 import AddProduct from "./AddProduct";
 
 const Products: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<DataType | null>(null);
+  // const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -60,11 +59,6 @@ const Products: React.FC = () => {
     setIsAddModalVisible(true);
   };
 
-  const handleEdit = (record: DataType) => {
-    setSelectedProduct(record);
-    setIsEditModalVisible(true);
-  };
-
   const handleDelete = async (key: React.Key) => {
     try {
       await axios.delete(`http://95.85.121.153:5634/product/${key}`);
@@ -79,9 +73,9 @@ const Products: React.FC = () => {
     setIsAddModalVisible(false);
   };
 
-  const handleEditModalClose = () => {
-    setIsEditModalVisible(false);
-  };
+  // const handleEditModalClose = () => {
+  //   setIsEditModalVisible(false);
+  // };
 
   const handleAddProductSuccess = () => {
     fetchProducts(); // Refresh product list after adding a product
@@ -156,12 +150,12 @@ const Products: React.FC = () => {
       title: "Action",
       key: "operation",
       fixed: "right",
-      width: 150,
+      width: 100,
       render: (_: any, record: DataType) => (
         <Space size="middle">
-          <Button type="link" onClick={() => handleEdit(record)}>
+          {/* <Button type="link" onClick={() => handleEdit(record)}>
             Edit
-          </Button>
+          </Button> */}
           <Button type="link" danger onClick={() => handleDelete(record.key)}>
             Delete
           </Button>
@@ -190,14 +184,14 @@ const Products: React.FC = () => {
         onClose={handleAddModalClose}
         onSuccess={handleAddProductSuccess} // Pass the success callback
       />
-      {selectedProduct && (
+      {/* {selectedProduct && (
         <EditProduct
           visible={isEditModalVisible}
           onClose={handleEditModalClose}
           product={selectedProduct}
           fetchProducts={fetchProducts}
         />
-      )}
+      )} */}
     </div>
   );
 };
