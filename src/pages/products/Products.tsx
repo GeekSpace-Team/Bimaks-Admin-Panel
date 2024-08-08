@@ -40,12 +40,12 @@ const Products: React.FC = () => {
           title_tm: product.title_tm,
           title_en: product.title_en,
           title_ru: product.title_ru,
-          short_tm: product.short_tm,
-          short_en: product.short_en,
-          short_ru: product.short_ru,
-          desc_tm: product.desc_tm,
-          desc_en: product.desc_en,
-          desc_ru: product.desc_ru,
+          short_tm: product.short_tm.slice(0, 100),
+          short_en: product.short_en.slice(0, 100),
+          short_ru: product.short_ru.slice(0, 100),
+          desc_tm: product.desc_tm.slice(11, 100),
+          desc_en: product.desc_en.slice(11, 100),
+          desc_ru: product.desc_ru.slice(11, 100),
           id: product.id,
         }))
       );
@@ -96,52 +96,61 @@ const Products: React.FC = () => {
       render: (text: string) => (
         <img src={text} alt="product" style={{ width: 50, height: 50 }} />
       ),
-      width: 100,
+      width: 130,
     },
     {
       title: "Title (TM)",
       dataIndex: "title_tm",
       key: "title_tm",
+      width: 250,
     },
     {
       title: "Title (EN)",
       dataIndex: "title_en",
       key: "title_en",
+      width: 250,
     },
     {
       title: "Title (RU)",
       dataIndex: "title_ru",
       key: "title_ru",
+      width: 250,
     },
     {
       title: "Short Description (TM)",
       dataIndex: "short_tm",
       key: "short_tm",
+      width: 250,
     },
     {
       title: "Short Description (EN)",
       dataIndex: "short_en",
       key: "short_en",
+      width: 250,
     },
     {
       title: "Short Description (RU)",
       dataIndex: "short_ru",
       key: "short_ru",
+      width: 250,
     },
     {
       title: "Description (TM)",
       dataIndex: "desc_tm",
       key: "desc_tm",
+      width: 350,
     },
     {
       title: "Description (EN)",
       dataIndex: "desc_en",
       key: "desc_en",
+      width: 350,
     },
     {
       title: "Description (RU)",
       dataIndex: "desc_ru",
       key: "desc_ru",
+      width: 350,
     },
     {
       title: "Action",

@@ -26,7 +26,6 @@ const SpinnerWrapper = styled.div`
   height: 100%;
 `;
 
-const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const Category = lazy(() => import("./pages/categories/Category"));
 const Products = lazy(() => import("./pages/products/Products"));
 
@@ -45,8 +44,7 @@ const App: React.FC = () => (
             }
           >
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/" element={<Products />} />
               <Route path="/categories" element={<Category />} />
             </Routes>
           </Suspense>

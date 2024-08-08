@@ -1,11 +1,7 @@
 // src/components/Sidebar.tsx
 import React, { useState } from "react";
 import { Layout, Menu, Tooltip } from "antd";
-import {
-  DashboardOutlined,
-  ShoppingOutlined,
-  TagsOutlined,
-} from "@ant-design/icons";
+import { ShoppingOutlined, TagsOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
@@ -56,25 +52,16 @@ const Sidebar: React.FC = () => {
         <AdminPanelText>Admin Panel</AdminPanelText>
       </div>
       <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
-        <Menu.Item key="1" icon={<DashboardOutlined />}>
-          <Tooltip
-            title="Dashboard"
-            placement="right"
-            overlayClassName={collapsed ? "" : "hidden"}
-          >
-            <Link to="/">Dashboard</Link>
-          </Tooltip>
-        </Menu.Item>
-        <Menu.Item key="2" icon={<ShoppingOutlined />}>
+        <Menu.Item key="1" icon={<ShoppingOutlined />}>
           <Tooltip
             title="Products"
             placement="right"
             overlayClassName={collapsed ? "" : "hidden"}
           >
-            <Link to="/products">Products</Link>
+            <Link to="/">Products</Link>
           </Tooltip>
         </Menu.Item>
-        <Menu.Item key="3" icon={<TagsOutlined />}>
+        <Menu.Item key="2" icon={<TagsOutlined />}>
           <Tooltip
             title="Categories"
             placement="right"
