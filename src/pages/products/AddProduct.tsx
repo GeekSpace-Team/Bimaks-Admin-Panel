@@ -31,8 +31,8 @@ const AddProduct: React.FC<AddProductProps> = ({
         );
         setGroups(response.data);
       } catch (error) {
-        console.error("Failed to fetch groups:", error);
-        message.error("Failed to fetch groups. Please try again.");
+        console.error("Не удалось загрузить группы:", error);
+        message.error("Не удалось загрузить группы. Попробуйте еще раз.");
       }
     };
 
@@ -45,13 +45,13 @@ const AddProduct: React.FC<AddProductProps> = ({
       const values = await form.validateFields();
 
       const formData = new FormData();
-      formData.append("title_tm", values.title_tm);
+      formData.append("title_tm", "test"); // Send default data for Turkmen
       formData.append("title_en", values.title_en);
       formData.append("title_ru", values.title_ru);
-      formData.append("short_tm", values.short_tm);
+      formData.append("short_tm", "test"); // Send default data for Turkmen
       formData.append("short_en", values.short_en);
       formData.append("short_ru", values.short_ru);
-      formData.append("desc_tm", values.desc_tm || "");
+      formData.append("desc_tm", "test"); // Send default data for Turkmen
       formData.append("desc_en", values.desc_en || "");
       formData.append("desc_ru", values.desc_ru || "");
       formData.append("group_id", values.group_id);
@@ -66,15 +66,15 @@ const AddProduct: React.FC<AddProductProps> = ({
         },
       });
 
-      message.success("Product added successfully!");
+      message.success("Продукт успешно добавлен!");
       form.resetFields();
       setFile(null); // Reset file state
       setImageUrl(undefined); // Clear image preview
       onSuccess(); // Notify parent component to refresh product list
       onClose();
     } catch (error) {
-      console.error("Failed to add product:", error);
-      message.error("Failed to add product. Please try again.");
+      console.error("Не удалось добавить продукт:", error);
+      message.error("Не удалось добавить продукт. Попробуйте еще раз.");
     }
   };
 
@@ -92,16 +92,16 @@ const AddProduct: React.FC<AddProductProps> = ({
 
   return (
     <Modal
-      title="Add Product"
+      title="Добавить продукт"
       visible={visible}
       onOk={handleOk}
       onCancel={onClose}
       footer={[
         <Button key="back" onClick={onClose}>
-          Cancel
+          Отмена
         </Button>,
         <Button key="submit" type="primary" onClick={handleOk}>
-          Submit
+          Отправить
         </Button>,
       ]}
       width="100%"
@@ -111,21 +111,13 @@ const AddProduct: React.FC<AddProductProps> = ({
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
-              name="title_tm"
-              label="Title (TM)"
-              rules={[
-                { required: true, message: "Please input the title in TM!" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
               name="title_en"
-              label="Title (EN)"
+              label="Название (EN)"
               rules={[
-                { required: true, message: "Please input the title in EN!" },
+                {
+                  required: true,
+                  message: "Пожалуйста, введите название на EN!",
+                },
               ]}
             >
               <Input />
@@ -134,9 +126,12 @@ const AddProduct: React.FC<AddProductProps> = ({
           <Col span={12}>
             <Form.Item
               name="title_ru"
-              label="Title (RU)"
+              label="Название (RU)"
               rules={[
-                { required: true, message: "Please input the title in RU!" },
+                {
+                  required: true,
+                  message: "Пожалуйста, введите название на RU!",
+                },
               ]}
             >
               <Input />
@@ -144,26 +139,12 @@ const AddProduct: React.FC<AddProductProps> = ({
           </Col>
           <Col span={12}>
             <Form.Item
-              name="short_tm"
-              label="Short Description (TM)"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the short description in TM!",
-                },
-              ]}
-            >
-              <Input.TextArea rows={2} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
               name="short_en"
-              label="Short Description (EN)"
+              label="Краткое описание (EN)"
               rules={[
                 {
                   required: true,
-                  message: "Please input the short description in EN!",
+                  message: "Пожалуйста, введите краткое описание на EN!",
                 },
               ]}
             >
@@ -173,11 +154,11 @@ const AddProduct: React.FC<AddProductProps> = ({
           <Col span={12}>
             <Form.Item
               name="short_ru"
-              label="Short Description (RU)"
+              label="Краткое описание (RU)"
               rules={[
                 {
                   required: true,
-                  message: "Please input the short description in RU!",
+                  message: "Пожалуйста, введите краткое описание на RU!",
                 },
               ]}
             >
@@ -186,26 +167,12 @@ const AddProduct: React.FC<AddProductProps> = ({
           </Col>
           <Col span={12}>
             <Form.Item
-              name="desc_tm"
-              label="Description (TM)"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the description in TM!",
-                },
-              ]}
-            >
-              <SunEditor setOptions={{ height: "200px" }} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
               name="desc_en"
-              label="Description (EN)"
+              label="Описание (EN)"
               rules={[
                 {
                   required: true,
-                  message: "Please input the description in EN!",
+                  message: "Пожалуйста, введите описание на EN!",
                 },
               ]}
             >
@@ -215,11 +182,11 @@ const AddProduct: React.FC<AddProductProps> = ({
           <Col span={12}>
             <Form.Item
               name="desc_ru"
-              label="Description (RU)"
+              label="Описание (RU)"
               rules={[
                 {
                   required: true,
-                  message: "Please input the description in RU!",
+                  message: "Пожалуйста, введите описание на RU!",
                 },
               ]}
             >
@@ -227,7 +194,7 @@ const AddProduct: React.FC<AddProductProps> = ({
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item name="image" label="Image">
+            <Form.Item name="image" label="Изображение">
               <input
                 type="file"
                 accept="image/*"
@@ -246,13 +213,15 @@ const AddProduct: React.FC<AddProductProps> = ({
           <Col span={12}>
             <Form.Item
               name="group_id"
-              label="Group"
-              rules={[{ required: true, message: "Please select a group!" }]}
+              label="Группа"
+              rules={[
+                { required: true, message: "Пожалуйста, выберите группу!" },
+              ]}
             >
-              <Select placeholder="Select a group">
+              <Select placeholder="Выберите группу">
                 {groups.map((group) => (
                   <Option key={group.id} value={group.id.toString()}>
-                    {group.name_en}
+                    {group.name_ru} {/* Displaying English name of the group */}
                   </Option>
                 ))}
               </Select>

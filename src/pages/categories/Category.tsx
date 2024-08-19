@@ -9,7 +9,6 @@ const StyledButton = styled(Button)`
 
 interface Category {
   id?: number;
-  name_tm: string;
   name_en: string;
   name_ru: string;
   image?: string;
@@ -21,7 +20,7 @@ const fetchCategories = async () => {
     const response = await axios.get("http://95.85.121.153:5634/product-group");
     return response.data;
   } catch (error) {
-    message.error("Failed to fetch categories");
+    message.error("Не удалось загрузить категории");
     throw error;
   }
 };
@@ -39,7 +38,7 @@ const addCategory = async (category: FormData) => {
     );
     return response.data;
   } catch (error) {
-    message.error("Failed to add category");
+    message.error("Не удалось добавить категорию");
     throw error;
   }
 };
@@ -57,7 +56,7 @@ const updateCategory = async (category: FormData) => {
     );
     return response.data;
   } catch (error) {
-    message.error("Failed to update category");
+    message.error("Не удалось обновить категорию");
     throw error;
   }
 };
@@ -66,7 +65,7 @@ const deleteCategory = async (id: number) => {
   try {
     await axios.delete(`http://95.85.121.153:5634/product-group/${id}`);
   } catch (error) {
-    message.error("Failed to delete category");
+    message.error("Не удалось удалить категорию");
     throw error;
   }
 };
@@ -84,7 +83,7 @@ const Category: React.FC = () => {
         const data = await fetchCategories();
         setCategories(data);
       } catch (error) {
-        message.error("Failed to fetch categories");
+        message.error("Не удалось загрузить категории");
       }
     };
 
@@ -94,7 +93,6 @@ const Category: React.FC = () => {
   useEffect(() => {
     if (editingCategory) {
       form.setFieldsValue({
-        name_tm: editingCategory.name_tm,
         name_en: editingCategory.name_en,
         name_ru: editingCategory.name_ru,
         file: [],
@@ -121,15 +119,14 @@ const Category: React.FC = () => {
   const handleDelete = (id: number) => {
     deleteCategory(id)
       .then(() => {
-        message.success("Category deleted successfully");
+        message.success("Категория успешно удалена");
         setCategories(categories.filter((category) => category.id !== id));
       })
-      .catch(() => message.error("Failed to delete category"));
+      .catch(() => message.error("Не удалось удалить категорию"));
   };
 
   const handleModalOk = async (values: any) => {
     const formData = new FormData();
-    formData.append("name_tm", values.name_tm);
     formData.append("name_en", values.name_en);
     formData.append("name_ru", values.name_ru);
 
@@ -141,21 +138,24 @@ const Category: React.FC = () => {
       }
     }
 
+    // Append default value for Turkmen name
+    formData.append("name_tm", "тест");
+
     try {
       if (editingCategory) {
         formData.append("id", editingCategory.id!.toString());
         await updateCategory(formData);
-        message.success("Category updated successfully");
+        message.success("Категория успешно обновлена");
       } else {
         await addCategory(formData);
-        message.success("Category added successfully");
+        message.success("Категория успешно добавлена");
       }
       setIsModalVisible(false);
       const data = await fetchCategories();
       setCategories(data);
     } catch (error) {
-      console.error("Error:", error);
-      message.error("Failed to save category");
+      console.error("Ошибка:", error);
+      message.error("Не удалось сохранить категорию");
     }
   };
 
@@ -171,18 +171,17 @@ const Category: React.FC = () => {
 
   const columns = [
     {
-      title: "Image",
+      title: "Изображение",
       dataIndex: "image",
       key: "image",
       render: (text: string) => (
-        <img src={text} alt="Category" style={{ width: 50, height: 50 }} />
+        <img src={text} alt="Категория" style={{ width: 50, height: 50 }} />
       ),
     },
-    { title: "Name (Turkmen)", dataIndex: "name_tm", key: "name_tm" },
-    { title: "Name (English)", dataIndex: "name_en", key: "name_en" },
-    { title: "Name (Russian)", dataIndex: "name_ru", key: "name_ru" },
+    { title: "Название (Английский)", dataIndex: "name_en", key: "name_en" },
+    { title: "Название (Русский)", dataIndex: "name_ru", key: "name_ru" },
     {
-      title: "Actions",
+      title: "Действия",
       key: "actions",
       render: (record: Category) => (
         <>
@@ -190,9 +189,9 @@ const Category: React.FC = () => {
             style={{ marginRight: "10px" }}
             onClick={() => handleEdit(record)}
           >
-            Edit
+            Редактировать
           </Button>
-          <Button onClick={() => handleDelete(record.id!)}>Delete</Button>
+          <Button onClick={() => handleDelete(record.id!)}>Удалить</Button>
         </>
       ),
     },
@@ -201,12 +200,14 @@ const Category: React.FC = () => {
   return (
     <div>
       <StyledButton type="primary" onClick={handleAdd}>
-        Add Category
+        Добавить категорию
       </StyledButton>
       <Table dataSource={categories} columns={columns} rowKey="id" />
 
       <Modal
-        title={editingCategory ? "Edit Category" : "Add Category"}
+        title={
+          editingCategory ? "Редактировать категорию" : "Добавить категорию"
+        }
         visible={isModalVisible}
         onOk={() => form.submit()}
         onCancel={handleModalCancel}
@@ -214,24 +215,12 @@ const Category: React.FC = () => {
       >
         <Form form={form} layout="vertical" onFinish={handleModalOk}>
           <Form.Item
-            name="name_tm"
-            label="Category Name (Turkmen)"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the category name (Turkmen)",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
             name="name_en"
-            label="Category Name (English)"
+            label="Название категории (Английский)"
             rules={[
               {
                 required: true,
-                message: "Please enter the category name (English)",
+                message: "Пожалуйста, введите название категории (Английский)",
               },
             ]}
           >
@@ -239,11 +228,11 @@ const Category: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="name_ru"
-            label="Category Name (Russian)"
+            label="Название категории (Русский)"
             rules={[
               {
                 required: true,
-                message: "Please enter the category name (Russian)",
+                message: "Пожалуйста, введите название категории (Русский)",
               },
             ]}
           >
@@ -251,7 +240,7 @@ const Category: React.FC = () => {
           </Form.Item>
           <Form.Item
             name="file"
-            label="Category Image"
+            label="Изображение категории"
             valuePropName="fileList"
             getValueFromEvent={(e: any) => e.fileList}
           >
@@ -261,7 +250,7 @@ const Category: React.FC = () => {
               beforeUpload={() => false} // Prevent automatic upload
               onChange={handleFileChange}
             >
-              <Button>Upload</Button>
+              <Button>Загрузить</Button>
             </Upload>
           </Form.Item>
         </Form>

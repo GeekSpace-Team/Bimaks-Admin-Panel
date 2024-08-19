@@ -49,25 +49,25 @@ const Sidebar: React.FC = () => {
     <StyledSider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
       <div>
         <SidebarTitle>Bimaks</SidebarTitle>
-        <AdminPanelText>Admin Panel</AdminPanelText>
+        <AdminPanelText>Административная панель</AdminPanelText>
       </div>
       <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline">
         <Menu.Item key="1" icon={<ShoppingOutlined />}>
           <Tooltip
-            title="Products"
+            title="Продукты"
             placement="right"
             overlayClassName={collapsed ? "" : "hidden"}
           >
-            <Link to="/">Products</Link>
+            <Link to="/">Продукты</Link>
           </Tooltip>
         </Menu.Item>
         <Menu.Item key="2" icon={<TagsOutlined />}>
           <Tooltip
-            title="Categories"
+            title="Категории"
             placement="right"
             overlayClassName={collapsed ? "" : "hidden"}
           >
-            <Link to="/categories">Categories</Link>
+            <Link to="/categories">Категории</Link>
           </Tooltip>
         </Menu.Item>
       </Menu>

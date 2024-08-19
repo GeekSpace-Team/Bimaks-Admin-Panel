@@ -3,13 +3,11 @@ import { Table, Space, Button, message } from "antd";
 import axios from "axios";
 import { ColumnsType } from "antd/es/table";
 import { DataType } from "../../type/types";
-// import EditProduct from "./EditProduct";
 import AddProduct from "./AddProduct";
 
 const Products: React.FC = () => {
   const [data, setData] = useState<DataType[]>([]);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
-  // const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -31,18 +29,14 @@ const Products: React.FC = () => {
         )
       );
 
-      // Combine the results from all responses
       const products = responses.flatMap((response) =>
         response.data.map((product: any) => ({
           key: product.id,
           image: product.image,
-          title_tm: product.title_tm,
           title_en: product.title_en,
           title_ru: product.title_ru,
-          short_tm: product.short_tm.slice(0, 100),
           short_en: product.short_en.slice(0, 100),
           short_ru: product.short_ru.slice(0, 100),
-          desc_tm: product.desc_tm.slice(11, 100),
           desc_en: product.desc_en.slice(11, 100),
           desc_ru: product.desc_ru.slice(11, 100),
           id: product.id,
@@ -51,7 +45,7 @@ const Products: React.FC = () => {
 
       setData(products);
     } catch (error) {
-      message.error("Failed to fetch products");
+      message.error("Не удалось загрузить продукты");
     }
   };
 
@@ -62,20 +56,16 @@ const Products: React.FC = () => {
   const handleDelete = async (key: React.Key) => {
     try {
       await axios.delete(`http://95.85.121.153:5634/product/${key}`);
-      message.success("Product deleted successfully");
+      message.success("Продукт успешно удален");
       fetchProducts(); // Refresh product list
     } catch (error) {
-      message.error("Failed to delete product");
+      message.error("Не удалось удалить продукт");
     }
   };
 
   const handleAddModalClose = () => {
     setIsAddModalVisible(false);
   };
-
-  // const handleEditModalClose = () => {
-  //   setIsEditModalVisible(false);
-  // };
 
   const handleAddProductSuccess = () => {
     fetchProducts(); // Refresh product list after adding a product
@@ -84,7 +74,7 @@ const Products: React.FC = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Image",
+      title: "Изображение",
       dataIndex: "image",
       key: "image",
       render: (text: string) => (
@@ -93,71 +83,50 @@ const Products: React.FC = () => {
       width: 130,
     },
     {
-      title: "Title (TM)",
-      dataIndex: "title_tm",
-      key: "title_tm",
-      width: 250,
-    },
-    {
-      title: "Title (EN)",
+      title: "Название (EN)",
       dataIndex: "title_en",
       key: "title_en",
       width: 250,
     },
     {
-      title: "Title (RU)",
+      title: "Название (RU)",
       dataIndex: "title_ru",
       key: "title_ru",
       width: 250,
     },
     {
-      title: "Short Description (TM)",
-      dataIndex: "short_tm",
-      key: "short_tm",
-      width: 250,
-    },
-    {
-      title: "Short Description (EN)",
+      title: "Краткое описание (EN)",
       dataIndex: "short_en",
       key: "short_en",
       width: 250,
     },
     {
-      title: "Short Description (RU)",
+      title: "Краткое описание (RU)",
       dataIndex: "short_ru",
       key: "short_ru",
       width: 250,
     },
     {
-      title: "Description (TM)",
-      dataIndex: "desc_tm",
-      key: "desc_tm",
-      width: 350,
-    },
-    {
-      title: "Description (EN)",
+      title: "Описание (EN)",
       dataIndex: "desc_en",
       key: "desc_en",
       width: 350,
     },
     {
-      title: "Description (RU)",
+      title: "Описание (RU)",
       dataIndex: "desc_ru",
       key: "desc_ru",
       width: 350,
     },
     {
-      title: "Action",
+      title: "Действие",
       key: "operation",
       fixed: "right",
       width: 100,
       render: (_: any, record: DataType) => (
         <Space size="middle">
-          {/* <Button type="link" onClick={() => handleEdit(record)}>
-            Edit
-          </Button> */}
           <Button type="link" danger onClick={() => handleDelete(record.key)}>
-            Delete
+            Удалить
           </Button>
         </Space>
       ),
@@ -173,25 +142,17 @@ const Products: React.FC = () => {
           marginBottom: 16,
         }}
       >
-        <h2>Products</h2>
+        <h2>Продукты</h2>
         <Button type="primary" onClick={handleAdd}>
-          Add Product
+          Добавить продукт
         </Button>
       </div>
       <Table columns={columns} dataSource={data} scroll={{ x: 1300 }} />
       <AddProduct
         visible={isAddModalVisible}
         onClose={handleAddModalClose}
-        onSuccess={handleAddProductSuccess} // Pass the success callback
+        onSuccess={handleAddProductSuccess}
       />
-      {/* {selectedProduct && (
-        <EditProduct
-          visible={isEditModalVisible}
-          onClose={handleEditModalClose}
-          product={selectedProduct}
-          fetchProducts={fetchProducts}
-        />
-      )} */}
     </div>
   );
 };

@@ -8,21 +8,18 @@ import { HeaderLeft, HeaderRight, StyledHeader } from "./header";
 const HeaderComponent: React.FC = () => {
   const location = useLocation();
 
-  // Map pathnames to page titles
   const pageTitles: { [key: string]: string } = {
-    "/": "Dashboard",
-    "/products": "Products",
-    "/categories": "Categories",
-    // Add more paths if needed
+    "/": "Продукты",
+    "/categories": "Категории",
   };
 
   // Get the current page title based on pathname
-  const pageTitle = pageTitles[location.pathname] || "Admin Panel";
+  const pageTitle = pageTitles[location.pathname] || "Административная панель";
 
   return (
     <StyledHeader>
       <HeaderLeft>
-        <span>Admin Panel | {pageTitle}</span>
+        <span>Административная панель | {pageTitle}</span>
       </HeaderLeft>
       <HeaderRight>
         <Avatar icon={<UserOutlined />} />
