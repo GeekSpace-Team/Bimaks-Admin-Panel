@@ -20,7 +20,7 @@ const Products: React.FC = () => {
 
   const handleDelete = async (key: React.Key) => {
     try {
-      await axios.delete(`http://95.85.121.153:5634/product/${key}`);
+      await axios.delete(`https://bimakstm.com/api//product/${key}`);
       message.success("Продукт успешно удален");
       fetchProducts(); // Refresh product list
     } catch (error) {

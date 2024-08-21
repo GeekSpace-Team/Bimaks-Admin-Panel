@@ -30,7 +30,7 @@ const EditProduct: React.FC<EditProductProps> = ({
     const fetchGroups = async () => {
       try {
         const response = await axios.get(
-          "http://95.85.121.153:5634/product-group"
+          "https://bimakstm.com/api/product-group"
         );
         setGroups(response.data);
       } catch (error) {
@@ -65,7 +65,7 @@ const EditProduct: React.FC<EditProductProps> = ({
       }
 
       await axios.patch(
-        `http://95.85.121.153:5634/product/${product.key}`,
+        `https://bimakstm.com/api/product/${product.key}`,
         formData,
         {
           headers: {

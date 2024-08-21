@@ -17,7 +17,7 @@ interface Category {
 
 const fetchCategories = async () => {
   try {
-    const response = await axios.get("http://95.85.121.153:5634/product-group");
+    const response = await axios.get("https://bimakstm.com/api/product-group");
     return response.data;
   } catch (error) {
     message.error("Не удалось загрузить категории");
@@ -28,7 +28,7 @@ const fetchCategories = async () => {
 const addCategory = async (category: FormData) => {
   try {
     const response = await axios.post(
-      "http://95.85.121.153:5634/product-group",
+      "https://bimakstm.com/api/product-group",
       category,
       {
         headers: {
@@ -46,7 +46,7 @@ const addCategory = async (category: FormData) => {
 const updateCategory = async (category: FormData) => {
   try {
     const response = await axios.patch(
-      `http://95.85.121.153:5634/product-group/${category.get("id")}`,
+      `https://bimakstm.com/api/product-group/${category.get("id")}`,
       category,
       {
         headers: {
@@ -63,7 +63,7 @@ const updateCategory = async (category: FormData) => {
 
 const deleteCategory = async (id: number) => {
   try {
-    await axios.delete(`http://95.85.121.153:5634/product-group/${id}`);
+    await axios.delete(`https://bimakstm.com/api/product-group/${id}`);
   } catch (error) {
     message.error("Не удалось удалить категорию");
     throw error;

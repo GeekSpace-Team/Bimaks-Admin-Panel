@@ -27,7 +27,7 @@ const AddProduct: React.FC<AddProductProps> = ({
     const fetchGroups = async () => {
       try {
         const response = await axios.get(
-          "http://95.85.121.153:5634/product-group"
+          "https://bimakstm.com/api/product-group"
         );
         setGroups(response.data);
       } catch (error) {
@@ -60,7 +60,7 @@ const AddProduct: React.FC<AddProductProps> = ({
         formData.append("file", file); // Append the file if available
       }
 
-      await axios.post("http://95.85.121.153:5634/product", formData, {
+      await axios.post("https://bimakstm.com/api/product", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
